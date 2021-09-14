@@ -26,3 +26,8 @@ spring:
     driverClassName: org.postgresql.Driver
     username:
     password:
+
+
+ajo:
+  security:
+    jwt_secret: $2a$10$kDFKBu7Vq3tVBFxUUnqmnOubaUjy5V6ZK2lJATGhavmF/qduL8.HO
