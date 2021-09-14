@@ -1,0 +1,1 @@
+INSERT INTO Admin (email, password) values('admin@admin.com', '$2a$10$kDFKBu7Vq3tVBFxUUnqmnOubaUjy5V6ZK2lJATGhavmF/qduL8.HO')
