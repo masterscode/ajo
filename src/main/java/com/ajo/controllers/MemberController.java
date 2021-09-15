@@ -17,6 +17,6 @@ import javax.validation.Valid;
 public class MemberController {
     @PostMapping
     public ResponseEntity<UserRegistrationRequest> createUser(@Valid @RequestBody UserRegistrationRequest registrationRequest){
-
+        return null;
     }
 }
