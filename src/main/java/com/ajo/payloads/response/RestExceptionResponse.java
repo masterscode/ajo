@@ -1,4 +1,4 @@
-package com.ajo.configuration;
+package com.ajo.payloads.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

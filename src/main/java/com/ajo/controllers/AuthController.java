@@ -20,6 +20,6 @@ public class AuthController {
     private final UserService userService;
 
     public @ResponseBody LoginResponse doLogin(@Valid @RequestBody UserLoginRequest loginRequest){
-        return null;
+        return userService.loginUser(loginRequest);
     }
 }
