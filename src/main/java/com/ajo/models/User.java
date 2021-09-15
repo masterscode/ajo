@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @MappedSuperclass
 public class User extends BaseEntity implements UserDetails, Serializable {
-    private String publicId;
+    private String publicId = UUID.randomUUID().toString();
 
     @NotNull
     private String firstName;
