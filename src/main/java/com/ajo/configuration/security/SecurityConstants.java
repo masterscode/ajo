@@ -19,6 +19,7 @@ public class SecurityConstants {
             "/swagger-ui/v1/register",
             "/swagger-ui/#/**",
             "/v1/login",
-            "/v1/register"
+            "/v1/register",
+            "/"
     };
 }
