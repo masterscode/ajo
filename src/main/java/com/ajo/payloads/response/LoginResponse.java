@@ -5,18 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserRegistrationResponse implements Serializable {
-
+public class LoginResponse {
     private String publicId;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
+    private String token;
 
     private Boolean isAccountNonExpired;
     private Boolean isAccountNonLocked;

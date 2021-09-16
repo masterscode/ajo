@@ -35,4 +35,4 @@ jobs:
         run: |
           echo ---show all files and dirs and start cleanup operations----
           ls -a
-          rm -r /target
+          rm -r target

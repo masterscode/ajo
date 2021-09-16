@@ -7,22 +7,23 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
+//@MappedSuperclass
+@Entity
+@Table(name = "users")
 public class User extends BaseEntity implements UserDetails, Serializable {
-    private String publicId;
+    private String publicId = UUID.randomUUID().toString();
 
     @NotNull
     private String firstName;
