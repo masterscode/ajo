@@ -3,11 +3,10 @@ package com.ajo.configuration;
 
 import com.ajo.models.Admin;
 import com.ajo.models.Role;
+import com.ajo.models.User;
 import com.ajo.models.enums.UserRole;
-import com.ajo.repositories.AdminRepository;
 import com.ajo.repositories.RoleRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.ajo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -22,22 +21,26 @@ import java.util.List;
 public class DatabaseSeeder {
 
     private final RoleRepository roleRepository;
-    private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
     private  final PasswordEncoder passwordEncoder;
 
     public void seedAdminUserEntity() {
-        adminRepository.findByEmail("admin@admin.com")
-                .ifPresentOrElse(admin -> log.info("base admin user already exists"), () -> {
-            Admin admin = new Admin();
-                    admin.setEmail("admin@admin.com");
-                    admin.setPassword(passwordEncoder.encode("password"));
-                    admin.setFirstName("Saparized");
-                    admin.setLastName("Admin :)");
-                    admin.setRole(
+        userRepository.findUserByEmail("admin@admin.com")
+                .ifPresentOrElse(admin -> {
+                    log.info("base admin user already seeded");
+                }, () -> {
+
+            User adminToSeed = new User();
+                    adminToSeed.setEmail("admin@admin.com");
+                    adminToSeed.setPassword(passwordEncoder.encode("password"));
+                    adminToSeed.setFirstName("Saparized");
+                    adminToSeed.setLastName("Admin");
+                    adminToSeed.setPhoneNumber("08000000000");
+                    adminToSeed.setRole(
                             roleRepository.findRoleByUserRole(UserRole.ADMIN)
                     );
-                    adminRepository.save(admin);
-                    log.info("admin has been created!");
+                    userRepository.save(adminToSeed);
+                    log.info("admin has been seeded successfully!");
                 });
     }
 
@@ -45,7 +48,7 @@ public class DatabaseSeeder {
         var roles = roleRepository.findAll().size();
         if (roles < 2){
             Role member = new Role();
-            member.setUserRole(UserRole.USER);
+            member.setUserRole(UserRole.MEMBER);
 
             Role admin = new Role();
             admin.setUserRole(UserRole.ADMIN);

@@ -1,7 +1,5 @@
 package com.ajo.services.impl;
 
-import com.ajo.models.Admin;
-import com.ajo.models.Member;
 import com.ajo.models.Role;
 import com.ajo.models.User;
 import com.ajo.models.enums.UserRole;
@@ -12,10 +10,12 @@ import com.ajo.payloads.response.UserRegistrationResponse;
 import com.ajo.repositories.AdminRepository;
 import com.ajo.repositories.MemberRepository;
 import com.ajo.repositories.RoleRepository;
+import com.ajo.repositories.UserRepository;
 import com.ajo.services.interfaces.UserService;
 import com.ajo.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,11 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
-import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class UserServiceImpl implements UserService {
+
     private final AdminRepository adminRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
@@ -38,25 +38,22 @@ public class UserServiceImpl implements UserService {
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
 
-    private User user;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        setUser(s);
-        return user;
+        return userRepository.findUserByEmail(s).orElseThrow();
     }
-
 
     @Override
     public LoginResponse loginUser(UserLoginRequest request) {
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
-                                request.getEmail(), request.getPassword()
-                        ));
+                        request.getEmail(), request.getPassword()
+                ));
 
-//        authentication.
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails loggedInUser = loadUserByUsername(request.getEmail());
 
@@ -70,19 +67,25 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserRegistrationResponse createUser(UserRegistrationRequest registrationRequest, UserRole userRole) {
+        boolean existsByEmail = userRepository.existsByEmail(registrationRequest.getEmail());
+        if (existsByEmail) throw new EntityExistsException();
+
         Role role = roleRepository.findRoleByUserRole(userRole);
 
         registrationRequest.setPassword(
                 passwordEncoder.encode(registrationRequest.getPassword())
         );
 
-        return userRole.name().equals("USER")
-                ? createMember(registrationRequest, role) : createAdmin(registrationRequest, role);
-    }
+        User userToRegister = modelMapper.map(registrationRequest, User.class);
+        userToRegister.setRole(role);
 
+        User registeredUser = userRepository.save(userToRegister);
+        return modelMapper.map(registeredUser, UserRegistrationResponse.class);
+
+
+    }
+/*
     private UserRegistrationResponse createMember(UserRegistrationRequest registrationRequest, Role role) {
-        boolean existsByEmail = memberRepository.existsByEmail(registrationRequest.getEmail());
-        if (existsByEmail) throw new EntityExistsException();
 
         Member memberToRegister = modelMapper.map(registrationRequest, Member.class);
         memberToRegister.setRole(role);
@@ -96,7 +99,8 @@ public class UserServiceImpl implements UserService {
 
          return registrationResponse;
     }
-
+*/
+    /*
     private UserRegistrationResponse createAdmin(UserRegistrationRequest registrationRequest, Role role) {
         boolean existsByEmail = memberRepository.existsByEmail(registrationRequest.getEmail());
         if (existsByEmail) throw new EntityExistsException();
@@ -112,9 +116,12 @@ public class UserServiceImpl implements UserService {
         );
 
         return registrationResponse;
-    }
+    }*/
 
+    /*
     private void setUser(String email){
         memberRepository.findMemberByEmail(email).ifPresentOrElse(member -> this.user = member, ()-> this.user = adminRepository.findByEmail(email).orElseThrow());
-    }
+    }*/
 }
+//   return userRole.name().equals("MEMBER")
+//                ? createMember(registrationRequest, role) : createAdmin(registrationRequest, role);

@@ -1,27 +1,23 @@
 package com.ajo.services.impl;
 
-import com.ajo.models.enums.UserRole;
 import com.ajo.payloads.requests.UserRegistrationRequest;
 import com.ajo.payloads.response.UserRegistrationResponse;
-import com.ajo.services.interfaces.AdminService;
+import com.ajo.repositories.MemberRepository;
+import com.ajo.services.interfaces.MemberService;
 import com.ajo.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+
 @RequiredArgsConstructor
-public class AdminServiceImpl implements AdminService {
-
+@Service
+public class MemberServiceImpl implements MemberService {
     private final UserService userService;
+    private final MemberRepository memberRepository;
 
-
-    @Override
-    public UserRegistrationResponse createAdmin(UserRegistrationRequest registrationRequest) {
-        return userService.createUser(registrationRequest, UserRole.ADMIN);
-    }
 
     @Override
     public UserRegistrationResponse createMember(UserRegistrationRequest registrationRequest) {
-        return userService.createUser(registrationRequest, UserRole.MEMBER);
+        return null;
     }
 }
