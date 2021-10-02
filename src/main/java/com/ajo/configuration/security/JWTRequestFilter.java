@@ -1,8 +1,6 @@
 package com.ajo.configuration.security;
 
 import com.ajo.utils.JWTUtil;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,15 +33,14 @@ public class JWTRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUserName(jwt);
         }
-        if (username != null){
+        if (username != null) {
             UserDetails userDetails = userService.loadUserByUsername(username);
 
-            if (Boolean.TRUE.equals(jwtUtil.validateToken(jwt, userDetails))){
-                log.debug("=============token validation is successful=========");
+            if (Boolean.TRUE.equals(jwtUtil.validateToken(jwt, userDetails))) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
